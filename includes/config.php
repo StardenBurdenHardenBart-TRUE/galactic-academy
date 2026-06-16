@@ -2,17 +2,17 @@
 // ============================================
 // GALACTIC ACADEMY - Konfigurasi Database
 // ============================================
-
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');       // Sesuaikan dengan username MySQL Anda
-define('DB_PASS', 'Pisangcoklat1');           // Sesuaikan dengan password MySQL Anda
-define('DB_NAME', 'galactic_academy');
+define('DB_PORT', $_ENV['MYSQLPORT'] ?? 3306);
+define('DB_HOST', $_ENV['MYSQLHOST'] ?? 'mysql.railway.internal');
+define('DB_USER', $_ENV['MYSQLUSER'] ?? 'root');
+define('DB_PASS', $_ENV['MYSQLPASSWORD'] ?? '');
+define('DB_NAME', $_ENV['MYSQLDATABASE'] ?? 'galactic_academy');
 define('APP_NAME', 'galactic Academy');
 define('APP_VERSION', '1.0');
 
 // Koneksi Database
 function getConnection() {
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
     
     if ($conn->connect_error) {
         die('<div style="font-family:sans-serif;padding:2rem;color:#ff6b6b;">
