@@ -3,29 +3,14 @@
 // GALACTIC ACADEMY - Konfigurasi Database
 // ============================================
 
-// Railway Environment Variables
-define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
-define('DB_USER', getenv('MYSQLUSER') ?: 'root');
-define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
-define('DB_NAME', getenv('MYSQLDATABASE') ?: 'galactic_academy');
-define('DB_PORT', getenv('MYSQLPORT') ?: 3306);
+define('DB_HOST', getenv('MYSQLHOST'));
+define('DB_USER', getenv('MYSQLUSER'));
+define('DB_PASS', getenv('MYSQLPASSWORD'));
+define('DB_NAME', getenv('MYSQLDATABASE'));
+define('DB_PORT', getenv('MYSQLPORT'));
 
 define('APP_NAME', 'Galactic Academy');
 define('APP_VERSION', '1.0');
-
-// ============================================
-// DEBUG RAILWAY (sementara)
-// ============================================
-
-echo "<div style='font-family:Arial;padding:20px'>";
-echo "<h2>Railway Environment Check</h2>";
-echo "HOST: " . DB_HOST . "<br>";
-echo "USER: " . DB_USER . "<br>";
-echo "PASSWORD: " . (DB_PASS ? "ADA" : "KOSONG") . "<br>";
-echo "DATABASE: " . DB_NAME . "<br>";
-echo "PORT: " . DB_PORT . "<br>";
-echo "</div>";
-exit;
 
 // ============================================
 // Koneksi Database
@@ -33,33 +18,51 @@ exit;
 
 function getConnection()
 {
-    $conn = new mysqli(
-        DB_HOST,
-        DB_USER,
-        DB_PASS,
-        DB_NAME,
-        DB_PORT
-    );
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-    if ($conn->connect_error) {
-        die(
-            '<div style="font-family:sans-serif;padding:2rem;color:#ff6b6b;">
-                <h2>⚠️ Koneksi Database Gagal</h2>
-                <p>Error: ' . $conn->connect_error . '</p>
-            </div>'
+    try {
+        $conn = new mysqli(
+            DB_HOST,
+            DB_USER,
+            DB_PASS,
+            DB_NAME,
+            (int) DB_PORT
         );
-    }
 
-    $conn->set_charset("utf8mb4");
-    return $conn;
+        $conn->set_charset("utf8mb4");
+
+        return $conn;
+    } catch (Exception $e) {
+
+        die("
+        <div style='font-family:Arial;padding:20px'>
+            <h2>Database Error</h2>
+
+            <p><strong>HOST:</strong> " . DB_HOST . "</p>
+            <p><strong>USER:</strong> " . DB_USER . "</p>
+            <p><strong>DATABASE:</strong> " . DB_NAME . "</p>
+            <p><strong>PORT:</strong> " . DB_PORT . "</p>
+
+            <hr>
+
+            <p><strong>ERROR:</strong><br>" . $e->getMessage() . "</p>
+        </div>
+        ");
+    }
 }
 
-// Session start
+// ============================================
+// Session
+// ============================================
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Cek login
+// ============================================
+// Login Check
+// ============================================
+
 function requireLogin()
 {
     if (!isset($_SESSION['user_id'])) {
@@ -68,13 +71,19 @@ function requireLogin()
     }
 }
 
-// Sanitize input
+// ============================================
+// Sanitize
+// ============================================
+
 function sanitize($input)
 {
     return htmlspecialchars(strip_tags(trim($input)));
 }
 
-// Flash message
+// ============================================
+// Flash Message
+// ============================================
+
 function setFlash($type, $message)
 {
     $_SESSION['flash'] = [
