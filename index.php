@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <hr class="login-divider">
         <div class="login-footer">
             <div>🔐 SECURE CONNECTION ESTABLISHED</div>
-            <div style="margin-top:6px;color:#4a6fa5;">Demo: admin / admin123</div>
+            <div style="margin-top:6px;color:#4a6fa5;">Demo: usn : admin / pass : admin123</div>
         </div>
     </div>
 </div>
